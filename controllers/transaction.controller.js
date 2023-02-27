@@ -24,24 +24,27 @@ const createTransaction = async (req, res) => {
             Amount 
         });
         
-        let docs = [];
-        let unitIds = [];
-        for(let i=0;i<No_of_Units;i++){
-            const newUnit = await Unit.create({ "Unit_Owner": user._id });
-            user.Units.push(newUnit._id);
-            newTransaction.Units.push(newUnit._id);
-            unitIds.push(newUnit._id);
-            docs.push(newUnit);
+        if(newTransaction.Status === "Success"){
+            let docs = [];
+            let unitIds = [];
+            for(let i=0;i<No_of_Units;i++){
+                const newUnit = await Unit.create({ "Unit_Owner": user._id });
+                user.Units.push(newUnit._id);
+                newTransaction.Units.push(newUnit._id);
+                unitIds.push(newUnit._id);
+                docs.push(newUnit);
+            }
+            Unit.insertMany(docs).then(function(){
+                console.log("Data inserted")  // Success
+            }).catch(function(error){
+                console.log(error)      // Failure
+            });
+            user.Basic = Number.parseInt(user.Basic) + Number.parseInt(Amount);
         }
-        Unit.insertMany(docs).then(function(){
-            console.log("Data inserted")  // Success
-        }).catch(function(error){
-            console.log(error)      // Failure
-        });
+        
 
         user.Transactions.push(newTransaction._id);
         user.No_of_Units= user.Units.length;
-        user.Basic = Number.parseInt(user.Basic) + Number.parseInt(Amount);
         
         await user.save({ session });
         await session.commitTransaction();
