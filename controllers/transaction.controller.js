@@ -88,8 +88,25 @@ const getTransactionInfoByID = async (req, res) => {
     }
 };
 
+const getTransaction = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const transaction = await Transaction.find({ _id: id });
+
+        if (transaction) {
+            res.status(200).json(transaction);
+        } else {
+            res.status(404).json({ message: "Transaction not found" });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 export {
     createTransaction,
     getTransactionInfoByID,
-    getAllTransactions
+    getAllTransactions,
+    getTransaction
 };
