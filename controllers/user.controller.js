@@ -8,9 +8,9 @@ dotenv.config();
 
 const createUser = async (req, res) => {
   try {
-    const { Name, DOB, Phone_number, Gender, email } = req.body;
+    const { name, dob, ContactNumber, gender, email } = req.body;
 
-    const userExists = await User.findOne({ Phone_number });
+    const userExists = await User.findOne({ ContactNumber });
 
     if (userExists) return res.status(200).json(userExists);
     const session = await mongoose.startSession();
@@ -21,10 +21,10 @@ const createUser = async (req, res) => {
     }).session(session);
 
     const newUser = await User.create({
-      Name,
-      DOB,
-      Phone_number,
-      Gender,
+      name,
+      dob,
+      ContactNumber,
+      gender,
       email,
     });
 
@@ -83,16 +83,16 @@ const getUserInfoByID = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { Name, email, Phone_number, Gender, DOB } = req.body;
+    const { name, email, ContactNumber, gender, dob } = req.body;
 
     await User.findByIdAndUpdate(
       { _id: id },
       {
-        Name,
+        name,
         email,
-        Phone_number,
-        Gender,
-        DOB,
+        ContactNumber,
+        gender,
+        dob,
       }
     );
 
