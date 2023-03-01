@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 const UserSchema = new mongoose.Schema({
     name: { type: String, required: true, default: " " },
     email: { type: String, required: true, default: " " },
-    ContactNumber: { type: String, required: true },
+    contactNumber: { type: String, required: true },
     gender: { type: String, required: true, default: " " },
     dob: { type: String, required: true, default: " " },
     No_of_Units: { type: Number, required: true, default: 0 },
