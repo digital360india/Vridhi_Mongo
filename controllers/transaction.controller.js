@@ -23,10 +23,10 @@ const createTransaction = async (req, res) => {
             User: user._id,
             Amount 
         });
-        
+        var unitIds = [];
         if(newTransaction.Status === "Success"){
             let docs = [];
-            let unitIds = [];
+
             for(let i=0;i<No_of_Units;i++){
                 const newUnit = await Unit.create({ "Unit_Owner": user._id });
                 user.Units.push(newUnit._id);
@@ -40,6 +40,7 @@ const createTransaction = async (req, res) => {
                 console.log(error)      // Failure
             });
             user.Basic = Number.parseInt(user.Basic) + Number.parseInt(Amount);
+            user.Wallet = Number.parseInt(user.Basic) + Number.parseInt(user.Profit);
         }
         
 
