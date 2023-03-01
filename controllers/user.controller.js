@@ -8,7 +8,7 @@ dotenv.config();
 
 const createUser = async (req, res) => {
   try {
-    const { Phone_number } = req.body;
+    const { Name, DOB, Phone_number, Gender, email } = req.body;
 
     const userExists = await User.findOne({ Phone_number });
 
@@ -21,7 +21,11 @@ const createUser = async (req, res) => {
     }).session(session);
 
     const newUser = await User.create({
+      Name,
+      DOB,
       Phone_number,
+      Gender,
+      email,
     });
 
     await numUser.collection.updateOne({}, [
