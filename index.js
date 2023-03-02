@@ -25,6 +25,8 @@ app.use('/api/v1/units', unitRouter);
 app.use('/api/v1/transactions', transactionRouter);
 app.use('/api/v1/currentPrice', noOfUsersRouter);
 
+//2592000000 milliseconds in 30 days
+
 const startServer = async () => {
     try {
         await connectDB(process.env.MONGODB_URL);
@@ -34,7 +36,7 @@ const startServer = async () => {
             const now = new Date();
             const units = await Unit.find({});
             for (const unit of units) {
-                const profitGenerated = Number.parseInt((now - unit.Purchase_Date) / 2592000000) * 100;
+                const profitGenerated = Number.parseInt((now - unit.Purchase_Date) / 3600000) * 10;
                 await Unit.updateOne({ _id: unit._id }, { $set: { Profit_Generated: profitGenerated } });
             }
             //console.log(`Units updated at ${now}`);
