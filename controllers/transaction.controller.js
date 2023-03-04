@@ -7,7 +7,7 @@ import mongoose from 'mongoose';
 
 const createTransaction = async (req, res) => {
     try{
-        const { Status, No_of_Units, User, Amount } = req.body;
+        const { Status, No_of_Units, User, Amount, Transaction_Number } = req.body;
         
         const session = await mongoose.startSession();
         session.startTransaction();
@@ -21,7 +21,8 @@ const createTransaction = async (req, res) => {
             Current_Price: numUser.Current_Price,
             No_of_Units,
             User: user._id,
-            Amount 
+            Amount,
+            Transaction_Number 
         });
         var unitIds = [];
         if(newTransaction.Status === "Success"){

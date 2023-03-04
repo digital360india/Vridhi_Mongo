@@ -9,6 +9,7 @@ const TransactionSchema = new mongoose.Schema({
     Units: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Unit' }],
     User: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     Amount: { type: Number, required: true },
+    Transaction_Number: { type: Number, required: true }
 });
 
 const transactionModel = mongoose.model('Transaction', TransactionSchema);
