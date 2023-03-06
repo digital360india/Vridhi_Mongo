@@ -54,7 +54,7 @@ const createTransaction = async (req, res) => {
         const session1 = await mongoose.startSession();
         session1.startTransaction();
         const transaction = await Transaction.findOne({_id: newTransaction._id}).session(session1);
-        await transaction.collection.updateOne({_id: newTransaction._id}, {$set: {"Units": unitIds}});
+        if(transaction.Status==="Success") await transaction.collection.updateOne({_id: newTransaction._id}, {$set: {"Units": unitIds}});
         await transaction.save({ session });
         await session1.commitTransaction();
 
