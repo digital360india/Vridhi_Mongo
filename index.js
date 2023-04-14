@@ -36,7 +36,7 @@ const startServer = async () => {
             const now = new Date();
             const units = await Unit.find({});
             for (const unit of units) {
-                const profitGenerated = Number.parseInt((now - unit.Purchase_Date) / 3600000) * 10;
+                const profitGenerated = Number.parseInt((now - unit.Purchase_Date) / 2592000000) * 100;
                 await Unit.updateOne({ _id: unit._id }, { $set: { Profit_Generated: profitGenerated } });
             }
             console.log(`Units updated at ${now}`);
@@ -52,7 +52,7 @@ const startServer = async () => {
                 await User.updateOne({ _id: user._id }, { $set: { Profit: sum, Wallet: user.Basic+user.Profit } });
             }
 
-        }, 10000);
+        }, 1800000);
     } catch (error) {
         console.log(error);
     }
