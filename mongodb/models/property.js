@@ -5,7 +5,7 @@ const PropertySchema = new mongoose.Schema({
     address: { type: String, required: true, default: " " },
     flatNo: { type: String, required: true, default: " " },
     area: { type: String, required: true, default: " " },
-    balcony: { type: String, required: true, default: " " },
+    balcony: { type: Number, required: true, default: 0 },
     marketValue: { type: Number, required: true, default: 0 },
     others: { type: String, required: true, default: " " },
     photos: [{ type: String, required: true, default: " " }],
