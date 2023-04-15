@@ -11,8 +11,10 @@ const PropertySchema = new mongoose.Schema({
     photos: [{ type: String, required: true, default: " " }],
     video: { type: String, required: true, default: " " },
     noOfTokens: { type: Number, required: true, default: 0 },
+    soldTokens: { type: Number, required: true, default: 0 },
     tokenValue: { type: Number, required: true, default: 0 },
-    Status: { type: String, required: true, default: "Active" }
+    Status: { type: String, required: true, default: "Active" },
+    tokens: [{ type: mongoose.Schema.Types.ObjectId, required: true }]
 });
 
 const propertyModel = mongoose.model('Property', PropertySchema);
