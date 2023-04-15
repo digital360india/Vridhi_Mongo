@@ -5,8 +5,8 @@ import { createProperty, updateProperty, getPropertyInfoById, getAllProperties }
 const router = express.Router();
 
 router.route('/').post(createProperty);
+router.route('/').get(getAllProperties);
 router.route('/:id').patch(updateProperty);
 router.route('/:id').get(getPropertyInfoById);
-router.route('/').get(getAllProperties);
 
 export default router;

@@ -5,8 +5,8 @@ import { createReferralCode, getAllReferralCodes, getRefCodeInfoById, updateRefC
 const router = express.Router();
 
 router.route('/').post(createReferralCode);
+router.route('/').get(getAllReferralCodes);
 router.route('/:id').patch(updateRefCode);
 router.route('/:id').get(getRefCodeInfoById);
-router.route('/').get(getAllReferralCodes);
 
 export default router;

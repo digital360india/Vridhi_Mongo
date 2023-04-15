@@ -12,6 +12,7 @@ const PropertySchema = new mongoose.Schema({
     video: { type: String, required: true, default: " " },
     noOfTokens: { type: Number, required: true, default: 0 },
     tokenValue: { type: Number, required: true, default: 0 },
+    Status: { type: String, required: true, default: "Active" }
 });
 
 const propertyModel = mongoose.model('Property', PropertySchema);
