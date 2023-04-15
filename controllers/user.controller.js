@@ -102,4 +102,25 @@ const updateUser = async (req, res) => {
   }
 };
 
-export { createUser, getUserInfoByID, updateUser };
+const updateUserActivity = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const updateActivity = await User.findByIdAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          activity: activity + 1,
+        },
+      }
+    );
+
+    return res
+      .status(200)
+      .json({ message: "User activity updated", user: updateActivity });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export { createUser, getUserInfoByID, updateUser, updateUserActivity };

@@ -13,6 +13,7 @@ const UserSchema = new mongoose.Schema({
     Wallet: { type: Number, required: true, default: 0 },
     Units: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Unit' }], 
     Transactions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Transaction' }],
+    activity: { type: Number, required: true, default: 0 }
 });
 
 const userModel = mongoose.model('User', UserSchema);
