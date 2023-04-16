@@ -63,7 +63,7 @@ const createPropertyTxn = async (req, res) => {
 
     const property = await Property.findOne({ _id: propertyId });
     await property.collection.updateOne({}, [
-      { $set: { soldTokens: Number.parseInt(property.soldTokens) + 1 } },
+      { $set: { soldTokens: Number.parseInt(property.soldTokens) + noOfTokens } },
     ]);
 
     await user.save({ session });
