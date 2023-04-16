@@ -58,6 +58,7 @@ const createPropertyTxn = async (req, res) => {
     }
 
     user.propertyTxn.push(newTransaction._id);
+    user.properties.push(propertyId);
     user.noOfTokens = user.tokens.length;
 
     const property = await Property.findOne({ _id: propertyId });
