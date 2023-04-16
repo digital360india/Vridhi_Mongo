@@ -8,6 +8,7 @@ import transactionRouter from './routes/transaction.routes.js';
 import unitRouter from './routes/unit.routes.js';
 import noOfUsersRouter from './routes/noOfUsers.routes.js';
 import propertyRouter from './routes/property.routes.js';
+import propertyTxnRouter from './routes/propertyTxn.routes.js';
 import refCodeRouter from './routes/referralCode.routes.js';
 import Unit from './mongodb/models/unit.js';
 import User from './mongodb/models/user.js';
@@ -26,7 +27,8 @@ app.use('/api/v1/users', userRouter);
 app.use('/api/v1/units', unitRouter);
 app.use('/api/v1/transactions', transactionRouter);
 app.use('/api/v1/currentPrice', noOfUsersRouter);
-app.use('/property',propertyRouter);
+app.use('/property', propertyRouter);
+app.use('/propertyTxn', propertyTxnRouter);
 app.use('/refCode', refCodeRouter);
 
 //2592000000 milliseconds in 30 days
