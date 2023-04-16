@@ -1,7 +1,7 @@
 import PropertyTxn from "../mongodb/models/PropertyTxn.js";
 import UserModel from "../mongodb/models/user.js";
 import Token from "../mongodb/models/token.js";
-import Property from '../mongodb/models/property.js';
+import Property from "../mongodb/models/property.js";
 
 import mongoose from "mongoose";
 
@@ -60,8 +60,10 @@ const createPropertyTxn = async (req, res) => {
     user.propertyTxn.push(newTransaction._id);
     user.noOfTokens = user.tokens.length;
 
-    const property = await Property.findOne({ _id: propertyId});
-    property.soldTokens += noOfTokens;
+    const property = await Property.findOne({ _id: propertyId });
+    await property.collection.updateOne({}, [
+      { $set: { soldTokens: Number.parseInt(property.soldTokens) + 1 } },
+    ]);
 
     await user.save({ session });
     await session.commitTransaction();
@@ -86,13 +88,13 @@ const createPropertyTxn = async (req, res) => {
 };
 
 const getAllPropertyTxn = async (req, res) => {
-    try {
-        const transactions = await PropertyTxn.find();
+  try {
+    const transactions = await PropertyTxn.find();
 
-        res.status(200).json(transactions);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-}
+    res.status(200).json(transactions);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
-export { createPropertyTxn, getAllPropertyTxn }
+export { createPropertyTxn, getAllPropertyTxn };
