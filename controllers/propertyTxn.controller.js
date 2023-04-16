@@ -1,6 +1,7 @@
 import PropertyTxn from "../mongodb/models/PropertyTxn.js";
 import UserModel from "../mongodb/models/user.js";
 import Token from "../mongodb/models/token.js";
+import Property from '../mongodb/models/property.js';
 
 import mongoose from "mongoose";
 
@@ -58,6 +59,9 @@ const createPropertyTxn = async (req, res) => {
 
     user.propertyTxn.push(newTransaction._id);
     user.noOfTokens = user.tokens.length;
+
+    const property = await Property.findOne({ _id: propertyId});
+    property.soldTokens += noOfTokens;
 
     await user.save({ session });
     await session.commitTransaction();
