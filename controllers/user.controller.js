@@ -102,7 +102,7 @@ const updateUser = async (req, res) => {
         contactNumber,
         gender,
         dob,
-        photo: photoUrl.url
+        photo: photoUrl.url,
       }
     );
 
@@ -116,14 +116,13 @@ const updateUserActivity = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const updateActivity = await User.findByIdAndUpdate(
-      { _id: id },
+    const updateActivity = await User.findByIdAndUpdate({ _id: id }, [
       {
         $set: {
-          activity: activity + 1,
+          activity: { $add: ["$activity", 1] },
         },
-      }
-    );
+      },
+    ]);
 
     return res
       .status(200)
@@ -141,6 +140,12 @@ const getAllUsers = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-}
+};
 
-export { createUser, getUserInfoByID, updateUser, updateUserActivity, getAllUsers };
+export {
+  createUser,
+  getUserInfoByID,
+  updateUser,
+  updateUserActivity,
+  getAllUsers,
+};

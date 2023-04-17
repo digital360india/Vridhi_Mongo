@@ -1,4 +1,5 @@
 import ReferralCode from "../mongodb/models/referralCode.js";
+import User from "../mongodb/models/user.js";
 
 const createReferralCode = async (req, res) => {
   try {
@@ -64,4 +65,50 @@ const updateRefCode = async (req, res) => {
   }
 };
 
-export { createReferralCode, getAllReferralCodes, getRefCodeInfoById, updateRefCode };
+const isRefCodeValid = async (req, res) => {
+  try {
+    const { refCode } = req.params;
+
+    const rc = await ReferralCode.findOne({ refCode: refCode });
+    if (rc) {
+      if (rc.claimed < rc.noOfUsers) {
+        await ReferralCode.updateOne({ refCode: refCode }, [
+          {
+            $set: {
+              claimed: { $add: ["$claimed", 1] },
+            },
+          },
+        ]);
+        await User.findByIdAndUpdate({ _id: rc.custId }, [
+          {
+            $set: {
+              refCodePts: { $add: ["$refCodePts", 1] },
+            },
+          },
+        ]);
+        res
+          .status(200)
+          .json({
+            isvalid: true,
+            message: "Referral Code applied successfully!!",
+          });
+      } else {
+        res.status(200).json({ isvalid: false, message: "Code Expired!!" });
+      }
+    } else {
+      res
+        .status(404)
+        .json({ isvalid: false, message: "Code does not exist!!" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export {
+  createReferralCode,
+  getAllReferralCodes,
+  getRefCodeInfoById,
+  updateRefCode,
+  isRefCodeValid,
+};
