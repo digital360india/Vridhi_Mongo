@@ -98,4 +98,20 @@ const getAllPropertyTxn = async (req, res) => {
   }
 };
 
-export { createPropertyTxn, getAllPropertyTxn };
+const getPropertyTxnByCustId = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const transactions = await PropertyTxn.find({ custId: id });
+
+        if(transactions){
+            res.status(200).json(transactions);
+        }else{
+            res.status(404).json({ message: "No Transactions exist!!" });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+export { createPropertyTxn, getAllPropertyTxn,getPropertyTxnByCustId };
