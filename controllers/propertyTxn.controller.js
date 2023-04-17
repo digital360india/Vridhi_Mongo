@@ -4,6 +4,10 @@ import Token from "../mongodb/models/token.js";
 import Property from "../mongodb/models/property.js";
 
 import mongoose from "mongoose";
+import * as dotenv from "dotenv";
+import { MongoClient } from "mongodb";
+
+dotenv.config();
 
 const createPropertyTxn = async (req, res) => {
   try {
@@ -63,7 +67,9 @@ const createPropertyTxn = async (req, res) => {
 
     const property = await Property.findOne({ _id: propertyId });
     await property.collection.updateOne({}, [
-      { $set: { soldTokens: Number.parseInt(property.soldTokens) + noOfTokens } },
+      {
+        $set: { soldTokens: Number.parseInt(property.soldTokens) + noOfTokens },
+      },
     ]);
 
     await user.save({ session });
@@ -99,35 +105,99 @@ const getAllPropertyTxn = async (req, res) => {
 };
 
 const getPropertyTxnByCustId = async (req, res) => {
-    try {
-        const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-        const transactions = await PropertyTxn.find({ custId: id });
+    const transactions = await PropertyTxn.find({ custId: id });
 
-        if(transactions){
-            res.status(200).json(transactions);
-        }else{
-            res.status(404).json({ message: "No Transactions exist!!" });
-        }
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+    if (transactions) {
+      res.status(200).json(transactions);
+    } else {
+      res.status(404).json({ message: "No Transactions exist!!" });
     }
-}
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 const getPropertyTxn = async (req, res) => {
-    try {
-        const { id } = req.params;
-        
-        const transaction = await PropertyTxn.find({ _id: id });
+  try {
+    const { id } = req.params;
 
-        if(transaction){
-            res.status(200).json(transaction);
-        }else{
-            res.status(404).json({ message: "No Transaction found!!" });
-        }
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+    const transaction = await PropertyTxn.find({ _id: id });
+
+    if (transaction) {
+      res.status(200).json(transaction);
+    } else {
+      res.status(404).json({ message: "No Transaction found!!" });
     }
-}
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
-export { createPropertyTxn, getAllPropertyTxn,getPropertyTxnByCustId, getPropertyTxn };
+const getAllTxns = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const agg = [
+      {
+        $match: {
+          $expr: {
+            $eq: [
+              "$custId",
+              {
+                $toObjectId: id,
+              },
+            ],
+          },
+        },
+      },
+      {
+        $unionWith: {
+          coll: "transactions",
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: [
+                    "$User",
+                    {
+                      $toObjectId: id,
+                    },
+                  ],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $sort: {
+          Date: -1,
+        },
+      },
+    ];
+    const client = await MongoClient.connect(process.env.MONGODB_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    const coll = client.db("test").collection("propertytxns");
+    const cursor = coll.aggregate(agg);
+    const result = await cursor.toArray();
+    console.log(coll);
+    await client.close();
+
+    return res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export {
+  createPropertyTxn,
+  getAllPropertyTxn,
+  getPropertyTxnByCustId,
+  getPropertyTxn,
+  getAllTxns,
+};
