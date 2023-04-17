@@ -114,4 +114,20 @@ const getPropertyTxnByCustId = async (req, res) => {
     }
 }
 
-export { createPropertyTxn, getAllPropertyTxn,getPropertyTxnByCustId };
+const getPropertyTxn = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        const transaction = await PropertyTxn.find({ _id: id });
+
+        if(transaction){
+            res.status(200).json(transaction);
+        }else{
+            res.status(404).json({ message: "No Transaction found!!" });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+export { createPropertyTxn, getAllPropertyTxn,getPropertyTxnByCustId, getPropertyTxn };
