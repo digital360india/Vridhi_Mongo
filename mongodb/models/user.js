@@ -21,6 +21,7 @@ const UserSchema = new mongoose.Schema({
     propertyTxn: [{ type: mongoose.Schema.Types.ObjectId, ref: 'PropertyTxn' }],
     activity: { type: Number, required: true, default: 0 },
     tokens: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Token' }],
+    photo: { type: String, required: true, default: " " },
 });
 
 const userModel = mongoose.model('User', UserSchema);

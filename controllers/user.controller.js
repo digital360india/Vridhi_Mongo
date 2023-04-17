@@ -3,8 +3,15 @@ import NoOfUsers from "../mongodb/models/noOfUsers.js";
 
 import mongoose from "mongoose";
 import * as dotenv from "dotenv";
+import { v2 as cloudinary } from "cloudinary";
 
 dotenv.config();
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const createUser = async (req, res) => {
   try {
@@ -83,7 +90,9 @@ const getUserInfoByID = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, email, contactNumber, gender, dob } = req.body;
+    const { name, email, contactNumber, gender, dob, photo } = req.body;
+
+    const photoUrl = await cloudinary.uploader.upload(photo);
 
     await User.findByIdAndUpdate(
       { _id: id },
@@ -93,6 +102,7 @@ const updateUser = async (req, res) => {
         contactNumber,
         gender,
         dob,
+        photo: photoUrl.url
       }
     );
 
