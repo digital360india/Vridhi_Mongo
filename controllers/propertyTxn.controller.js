@@ -200,7 +200,6 @@ const getAllTxns = async (req, res) => {
     const coll = client.db("test").collection("propertytxns");
     const cursor = coll.aggregate(agg);
     const result = await cursor.toArray();
-    console.log(coll);
     await client.close();
 
     return res.status(200).json(result);
