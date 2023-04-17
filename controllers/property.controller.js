@@ -106,7 +106,10 @@ const getActiveBids = async (req, res) => {
 
       const user = await User.findById({ _id: id });
 
-      var propertyIds = [...new Set(user.properties)];
+      const props = user.properties;
+      var propertyIds = props.map((property) => {
+        return property.propertyId;
+      });
       var properties = [];
 
       for(let i=0; i<propertyIds.length; i++){
@@ -114,7 +117,7 @@ const getActiveBids = async (req, res) => {
         properties.push(property);
       }
 
-      res.status(200).json({ properties });
+      res.status(200).json(properties);
   } catch (error) {
       res.status(500).json({ message: error.message });
   }

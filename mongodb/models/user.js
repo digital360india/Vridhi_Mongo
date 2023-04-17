@@ -12,7 +12,10 @@ const UserSchema = new mongoose.Schema({
     Profit: { type: Number, required: true, default: 0, ref: 'Unit' },
     Basic: { type: Number, required: true, default: 0 },
     Wallet: { type: Number, required: true, default: 0 },
-    properties: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Property' }],
+    properties: [{ 
+        propertyId: { type: mongoose.Schema.Types.ObjectId, ref: 'Property' },
+        tokensBought: { type: Number, required: true }
+     }],
     Units: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Unit' }], 
     Transactions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Transaction' }],
     propertyTxn: [{ type: mongoose.Schema.Types.ObjectId, ref: 'PropertyTxn' }],

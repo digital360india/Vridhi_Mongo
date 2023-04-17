@@ -62,13 +62,28 @@ const createPropertyTxn = async (req, res) => {
     }
 
     user.propertyTxn.push(newTransaction._id);
-    user.properties.push(propertyId);
+    var br = true;
+    for (let i = 0; i < user.properties.length; i++) {
+      if (user.properties[i].propertyId === propertyId) {
+        user.properties[i].tokensBought += noOfTokens;
+        br = false;
+        break;
+      }
+    }
+    if (br == true) {
+      const prop = {
+        propertyId,
+        tokensBought: noOfTokens,
+      };
+      user.properties.push(prop);
+    }
     user.noOfTokens = user.tokens.length;
 
-    const property = await Property.findOne({ _id: propertyId });
-    await property.collection.updateOne({}, [
+    await Property.findByIdAndUpdate({ _id: propertyId }, [
       {
-        $set: { soldTokens: Number.parseInt(property.soldTokens) + noOfTokens },
+        $set: {
+          soldTokens: { $add: ["$soldTokens", noOfTokens] },
+        },
       },
     ]);
 
