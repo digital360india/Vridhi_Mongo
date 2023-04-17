@@ -1,4 +1,5 @@
 import Property from "../mongodb/models/property.js";
+import User from '../mongodb/models/user.js';
 
 const createProperty = async (req, res) => {
   try {
@@ -99,4 +100,24 @@ const getAllProperties = async (req, res) => {
     }
 }
 
-export { createProperty, updateProperty, getPropertyInfoById, getAllProperties };
+const getActiveBids = async (req, res) => {
+  try {
+      const { id } = req.params;
+
+      const user = await User.findById({ _id: id });
+
+      const propertyIds = new Set(user.properties);
+      var properties = [];
+
+      for(let i=0; i<propertyIds.length; i++){
+        const property = Property.findById({ _id: propertyIds[i] });
+        properties.push(property);
+      }
+
+      res.status(200).json(properties);
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+}
+
+export { createProperty, updateProperty, getPropertyInfoById, getAllProperties, getActiveBids };
