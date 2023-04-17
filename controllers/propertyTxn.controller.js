@@ -64,7 +64,7 @@ const createPropertyTxn = async (req, res) => {
     user.propertyTxn.push(newTransaction._id);
     var br = true;
     for (let i = 0; i < user.properties.length; i++) {
-      if (user.properties[i].propertyId === propertyId) {
+      if (user.properties[i].propertyId == propertyId) {
         user.properties[i].tokensBought += noOfTokens;
         br = false;
         break;
