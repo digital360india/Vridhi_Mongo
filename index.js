@@ -6,6 +6,7 @@ import connectDB from "./mongodb/connect.js";
 import userRouter from "./routes/user.routes.js";
 import transactionRouter from "./routes/transaction.routes.js";
 import unitRouter from "./routes/unit.routes.js";
+import tokenRouter from "./routes/token.routes.js";
 import noOfUsersRouter from "./routes/noOfUsers.routes.js";
 import propertyRouter from "./routes/property.routes.js";
 import propertyTxnRouter from "./routes/propertyTxn.routes.js";
@@ -30,6 +31,7 @@ app.use("/api/v1/currentPrice", noOfUsersRouter);
 app.use("/property", propertyRouter);
 app.use("/propertyTxn", propertyTxnRouter);
 app.use("/refCode", refCodeRouter);
+app.use("/token", tokenRouter);
 
 //2592000000 milliseconds in 30 days
 

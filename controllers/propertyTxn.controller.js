@@ -35,9 +35,10 @@ const createPropertyTxn = async (req, res) => {
       Amount,
       Transaction_Number,
     });
+
     var tokenIds = [];
     if (newTransaction.Status === "Success") {
-      let docs = [];
+      var docs = [];
 
       for (let i = 0; i < noOfTokens; i++) {
         const newToken = await Token.create({
@@ -78,7 +79,14 @@ const createPropertyTxn = async (req, res) => {
       user.properties.push(prop);
     }
     user.noOfTokens = user.tokens.length;
-
+    await Property.findByIdAndUpdate({ _id: propertyId },
+      {
+        $push: {
+          tokens: {
+            $each: docs,
+          },
+        },
+      });
     await Property.findByIdAndUpdate({ _id: propertyId }, [
       {
         $set: {
