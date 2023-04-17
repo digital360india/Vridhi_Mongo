@@ -106,11 +106,11 @@ const getActiveBids = async (req, res) => {
 
       const user = await User.findById({ _id: id });
 
-      const propertyIds = new Set(user.properties);
+      var propertyIds = [...new Set(user.properties)];
       var properties = [];
 
       for(let i=0; i<propertyIds.length; i++){
-        const property = Property.findById({ _id: propertyIds[i] });
+        const property = await Property.findById({ _id: propertyIds[i] });
         properties.push(property);
       }
 
