@@ -68,7 +68,7 @@ const updateUnit = async (req, res) => {
 
 const getAllUnits = async (req, res) => {
     try {
-        const units = Unit.find({});
+        const units = await Unit.find({});
 
         return res.status(200).json(units);
     } catch (error) {
