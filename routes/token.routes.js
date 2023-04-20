@@ -1,9 +1,10 @@
 import express from 'express';
 
-import { allotPropToToken } from '../controllers/token.controller.js';
+import { allotPropToToken, getAllTokens } from '../controllers/token.controller.js';
 
 const router = express.Router();
 
+router.route('/allTokens').get(allotPropToToken);
 router.route('/:tokenId').get(allotPropToToken);
 
 export default router;
