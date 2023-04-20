@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 const PropertySchema = new mongoose.Schema({
     title: { type: String, required: true, default: " " },
     address: { type: String, required: true, default: " " },
+    type: { type: String },
     flatNo: { type: String, required: true, default: " " },
     area: { type: String, required: true, default: " " },
     balcony: { type: Number, required: true, default: 0 },
