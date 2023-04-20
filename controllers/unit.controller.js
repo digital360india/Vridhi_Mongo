@@ -66,8 +66,19 @@ const updateUnit = async (req, res) => {
     }
 };
 
+const getAllUnits = async (req, res) => {
+    try {
+        const units = Unit.find({});
+
+        return res.status(200).json(units);
+    } catch (error) {
+        res.status(500).json({ message: error.message }); 
+    }
+}
+
 export {
     createUnit,
     getUnitInfoByID,
-    updateUnit
+    updateUnit,
+    getAllUnits
 };
