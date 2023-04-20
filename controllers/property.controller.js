@@ -3,6 +3,7 @@ import User from "../mongodb/models/user.js";
 
 import * as dotenv from "dotenv";
 import { v2 as cloudinary } from "cloudinary";
+import { MongoClient } from "mongodb";
 
 dotenv.config();
 
@@ -153,10 +154,55 @@ const getActiveBids = async (req, res) => {
   }
 };
 
+const getPropDash = async (req, res) => {
+  try {
+    const agg = [
+      {
+        $set: {
+          Alloted: {
+            $and: {
+              $eq: ["$Status", "Alloted"],
+            },
+          },
+        },
+      },
+      {
+        $group: {
+          _id: "$Alloted",
+          totalProperties: {
+            $count: {},
+          },
+          tokensSold: {
+            $sum: "$soldTokens",
+          },
+          revenueGenerated: {
+            $sum: {
+              $multiply: ["$soldTokens", "$tokenValue"],
+            },
+          },
+        },
+      },
+    ];
+    const client = await MongoClient.connect(process.env.MONGODB_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    const coll = client.db("test").collection("properties");
+    const cursor = coll.aggregate(agg);
+    const result = await cursor.toArray();
+    await client.close();
+
+    return res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export {
   createProperty,
   updateProperty,
   getPropertyInfoById,
   getAllProperties,
   getActiveBids,
+  getPropDash
 };
