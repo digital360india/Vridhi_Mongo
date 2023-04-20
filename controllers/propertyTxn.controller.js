@@ -44,6 +44,8 @@ const createPropertyTxn = async (req, res) => {
         const newToken = await Token.create({
           custId,
           propertyId,
+          name: user.name,
+          contactNumber: user.contactNumber,
           tokenPrice,
           costPrice: Amount,
           Transaction_Number,

@@ -142,10 +142,54 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+const getEnergyDashboard = async (req, res) => {
+  try {
+    const agg = [
+      {
+        $match: {
+          No_of_Units: {
+            $ne: 0,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: "dashboard",
+          totalEnergyBuyers: {
+            $count: {},
+          },
+          totalUnitsBought: {
+            $sum: "$No_of_Units",
+          },
+          totalPayout: {
+            $sum: "$Profit",
+          },
+          totalEnergyRevenue: {
+            $sum: "$Wallet",
+          },
+        },
+      },
+    ];
+    const client = await MongoClient.connect(process.env.MONGODB_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    const coll = client.db("test").collection("users");
+    const cursor = coll.aggregate(agg);
+    const result = await cursor.toArray();
+    await client.close();
+
+    return res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export {
   createUser,
   getUserInfoByID,
   updateUser,
   updateUserActivity,
   getAllUsers,
+  getEnergyDashboard
 };

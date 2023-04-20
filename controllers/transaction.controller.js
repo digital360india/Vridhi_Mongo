@@ -29,7 +29,7 @@ const createTransaction = async (req, res) => {
             let docs = [];
 
             for(let i=0;i<No_of_Units;i++){
-                const newUnit = await Unit.create({ "Unit_Owner": user._id });
+                const newUnit = await Unit.create({ "Unit_Owner": user._id, "name": user.name, "contactNumber": user.contactNumber, "unitPrice": numUser.Current_Price });
                 user.Units.push(newUnit._id);
                 newTransaction.Units.push(newUnit._id);
                 unitIds.push(newUnit._id);
