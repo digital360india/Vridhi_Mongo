@@ -4,6 +4,7 @@ import NoOfUsers from "../mongodb/models/noOfUsers.js";
 import mongoose from "mongoose";
 import * as dotenv from "dotenv";
 import { v2 as cloudinary } from "cloudinary";
+import { MongoClient } from "mongodb";
 
 dotenv.config();
 
