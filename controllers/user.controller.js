@@ -180,7 +180,7 @@ const getEnergyDashboard = async (req, res) => {
     const result = await cursor.toArray();
     await client.close();
 
-    return res.status(200).json(result);
+    return res.status(200).json({data:result});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
