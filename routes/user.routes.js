@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { createUser,  getUserInfoByID, updateUser, updateUserActivity, getAllUsers, getEnergyDashboard } from '../controllers/user.controller.js';
+import { createUser,  getUserInfoByID, updateUser, updateUserActivity, getAllUsers, getEnergyDashboard, getUserByMobile } from '../controllers/user.controller.js';
 
 const router = express.Router();
 
@@ -10,5 +10,6 @@ router.route('/getEnergyDashboard').get(getEnergyDashboard);
 router.route('/:id').get(getUserInfoByID);
 router.route('/:id').patch(updateUser);
 router.route('/activity/:id').patch(updateUserActivity);
+router.route('/mobile/:number').get(getUserByMobile);
 
 export default router;

@@ -185,6 +185,21 @@ const getEnergyDashboard = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+const getUserByMobile = async (req, res) => {
+  try {
+    const { mob } = req.params;
+
+    const user = await User.findOne({ constactNumber: mob });
+
+    if(user){
+      return res.status(200).json(user);
+    }else{
+      return res.status(404).json({ message: "User not found! Try with another mobile number." });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
 
 export {
   createUser,
@@ -192,5 +207,6 @@ export {
   updateUser,
   updateUserActivity,
   getAllUsers,
-  getEnergyDashboard
+  getEnergyDashboard,
+  getUserByMobile
 };
