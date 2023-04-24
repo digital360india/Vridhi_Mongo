@@ -187,9 +187,11 @@ const getEnergyDashboard = async (req, res) => {
 };
 const getUserByMobile = async (req, res) => {
   try {
-    const { mob } = req.params;
+    const { mob } = req.headers;
+    console.log(mob)
 
     const user = await User.findOne({ contactNumber: mob });
+    console.log(user);
 
     if(user){
       return res.status(200).json(user);
