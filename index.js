@@ -13,6 +13,7 @@ import propertyTxnRouter from "./routes/propertyTxn.routes.js";
 import refCodeRouter from "./routes/referralCode.routes.js";
 import Unit from "./mongodb/models/unit.js";
 import User from "./mongodb/models/user.js";
+import Property from "./mongodb/models/property.js";
 
 dotenv.config();
 
@@ -62,13 +63,22 @@ const startServer = async () => {
           const newUnit = await Unit.findOne({ _id: units[i] });
           sum += newUnit.Profit_Generated;
         }
-        console.log(sum);
+        //console.log(sum);
         await User.updateOne(
           { _id: user._id },
           { $set: { Profit: sum, Wallet: user.Basic + user.Profit } }
         );
       }
-    }, 1800000);
+      const properties = await Property.find({});
+      for ( const property of properties ){
+        await Property.update(
+          { $eq: ["$soldTokens", "$noOfTokens"] },
+          { $set: {
+            Status: "Sold Out"
+          }}
+        );
+      }
+    }, 900000);
   } catch (error) {
     console.log(error);
   }

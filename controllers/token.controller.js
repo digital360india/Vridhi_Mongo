@@ -15,7 +15,11 @@ const allotPropToToken = async (req, res) => {
                     $set: { Status: "Alloted"}
                 },
                 {
-                    $set: { winner: token.custId }
+                    $set: { winner: {
+                        custId: token.custId,
+                        image: winner.photo
+                    }
+                }
                 }
             ]);
             res.status(200).json(winner);

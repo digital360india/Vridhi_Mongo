@@ -16,7 +16,10 @@ const PropertySchema = new mongoose.Schema({
     tokenValue: { type: Number, required: true, default: 0 },
     Status: { type: String, required: true, default: "Active" },
     tokens: [{ type: Object, required: true }],
-    winner: { type: mongoose.Schema.Types.ObjectId, ref: "User" }
+    winner: {
+        custId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        image: { type: String, ref: "User" }
+    }
 });
 
 const propertyModel = mongoose.model('Property', PropertySchema);
