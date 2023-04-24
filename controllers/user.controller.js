@@ -189,7 +189,7 @@ const getUserByMobile = async (req, res) => {
   try {
     const { mob } = req.params;
 
-    const user = await User.findOne({ constactNumber: mob });
+    const user = await User.findOne({ contactNumber: mob });
 
     if(user){
       return res.status(200).json(user);
