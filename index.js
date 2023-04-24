@@ -69,15 +69,15 @@ const startServer = async () => {
           { $set: { Profit: sum, Wallet: user.Basic + user.Profit } }
         );
       }
-      const properties = await Property.find({});
-      for ( const property of properties ){
+      // const properties = await Property.find({});
+      // for ( const property of properties ){
         await Property.update(
           { $eq: ["$soldTokens", "$noOfTokens"] },
           { $set: {
             Status: "Sold Out"
           }}
         );
-      }
+     // }
     }, 900000);
   } catch (error) {
     console.log(error);
