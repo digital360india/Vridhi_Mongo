@@ -80,7 +80,10 @@ const createPropertyTxn = async (req, res) => {
       user.properties.push(prop);
     }
     user.noOfTokens = user.tokens.length;
-    if (newTransaction.Status == "Success") {
+    if (
+      newTransaction.Status == "Success" ||
+      newTransaction.Status == "Pending"
+    ) {
       await Property.findByIdAndUpdate(
         { _id: propertyId },
         {
@@ -108,7 +111,7 @@ const createPropertyTxn = async (req, res) => {
     const transaction = await PropertyTxn.findOne({
       _id: newTransaction._id,
     }).session(session1);
-    if (transaction.Status === "Success")
+    if (transaction.Status === "Success" || transaction.Status === "Pending")
       await transaction.collection.updateOne(
         { _id: newTransaction._id },
         { $set: { tokens: tokenIds } }
