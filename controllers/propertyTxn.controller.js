@@ -38,7 +38,10 @@ const createPropertyTxn = async (req, res) => {
 
     var tokenIds = [];
     var docs = [];
-    if (newTransaction.Status === "Success") {
+    if (
+      newTransaction.Status === "Success" ||
+      newTransaction.Status === "Pending"
+    ) {
       for (let i = 0; i < noOfTokens; i++) {
         const newToken = await Token.create({
           custId,
@@ -94,14 +97,15 @@ const createPropertyTxn = async (req, res) => {
           },
         }
       );
-    }
-    await Property.findByIdAndUpdate({ _id: propertyId }, [
-      {
-        $set: {
-          soldTokens: { $add: ["$soldTokens", noOfTokens] },
+
+      await Property.findByIdAndUpdate({ _id: propertyId }, [
+        {
+          $set: {
+            soldTokens: { $add: ["$soldTokens", noOfTokens] },
+          },
         },
-      },
-    ]);
+      ]);
+    }
 
     await user.save({ session });
     await session.commitTransaction();
