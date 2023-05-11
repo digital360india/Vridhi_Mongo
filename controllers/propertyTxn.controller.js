@@ -223,11 +223,12 @@ const updatePropTxnStatus = async (req, res) => {
     const { status } = req.body;
     const { id } = req.params;
 
-    const propTxn = await PropertyTxn.findByIdAndUpdate({ _id: id }, {
+    await PropertyTxn.findByIdAndUpdate({ _id: id }, {
       $set: {
         Status: status
       }
     });
+    const propTxn = await PropertyTxn.findById({ _id: id });
 
     return res.status(200).json(propTxn);
   } catch (error) {
