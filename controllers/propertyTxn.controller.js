@@ -37,9 +37,8 @@ const createPropertyTxn = async (req, res) => {
     });
 
     var tokenIds = [];
+    var docs = [];
     if (newTransaction.Status === "Success") {
-      var docs = [];
-
       for (let i = 0; i < noOfTokens; i++) {
         const newToken = await Token.create({
           custId,
@@ -81,14 +80,18 @@ const createPropertyTxn = async (req, res) => {
       user.properties.push(prop);
     }
     user.noOfTokens = user.tokens.length;
-    await Property.findByIdAndUpdate({ _id: propertyId },
-      {
-        $push: {
-          tokens: {
-            $each: docs,
+    if (newTransaction.Status == "Success") {
+      await Property.findByIdAndUpdate(
+        { _id: propertyId },
+        {
+          $push: {
+            tokens: {
+              $each: docs,
+            },
           },
-        },
-      });
+        }
+      );
+    }
     await Property.findByIdAndUpdate({ _id: propertyId }, [
       {
         $set: {
@@ -223,18 +226,21 @@ const updatePropTxnStatus = async (req, res) => {
     const { status } = req.body;
     const { id } = req.params;
 
-    await PropertyTxn.findByIdAndUpdate({ _id: id }, {
-      $set: {
-        Status: status
+    await PropertyTxn.findByIdAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          Status: status,
+        },
       }
-    });
+    );
     const propTxn = await PropertyTxn.findById({ _id: id });
 
     return res.status(200).json(propTxn);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-}
+};
 
 export {
   createPropertyTxn,
@@ -242,5 +248,5 @@ export {
   getPropertyTxnByCustId,
   getPropertyTxn,
   getAllTxns,
-  updatePropTxnStatus
+  updatePropTxnStatus,
 };
