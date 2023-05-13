@@ -198,11 +198,28 @@ const getPropDash = async (req, res) => {
   }
 };
 
+const deleteProperty = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const propertytToDelete = await Property.findById({ _id: id });
+    if(!propertytToDelete) return res.status(404).json({ message: "Property not found!!" });
+    else{
+      await Property.findByIdAndDelete({ _id: id });
+
+      return res.status(200).json({ message: "Property Deleted successfully!!" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
 export {
   createProperty,
   updateProperty,
   getPropertyInfoById,
   getAllProperties,
   getActiveBids,
-  getPropDash
+  getPropDash,
+  deleteProperty
 };
