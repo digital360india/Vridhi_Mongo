@@ -249,6 +249,22 @@ const updatePropTxnStatus = async (req, res) => {
   }
 };
 
+const getTokensByTxnId = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const txn = await PropertyTxn.findById({ _id: id });
+
+    if (txn) {
+      return res.status(200).json({ tokenIds: txn.tokens });
+    } else {
+      res.status(404).json({ message: "Transaction not found!!" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export {
   createPropertyTxn,
   getAllPropertyTxn,
@@ -256,4 +272,5 @@ export {
   getPropertyTxn,
   getAllTxns,
   updatePropTxnStatus,
+  getTokensByTxnId,
 };
