@@ -9,7 +9,8 @@ const PropertyTxnSchema = new mongoose.Schema({
     propertyId: { type: mongoose.Schema.Types.ObjectId, ref: 'Property' },
     tokenPrice: { type: Number, required: true },
     Amount: { type: Number, required: true },
-    Transaction_Number: { type: String, required: true }
+    Transaction_Number: { type: String, required: true },
+    paymentMethod: { type: String, required: true, default: " " }
 });
 
 const propertyTxnModel = mongoose.model('PropertyTxn', PropertyTxnSchema);

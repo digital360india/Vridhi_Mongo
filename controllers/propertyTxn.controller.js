@@ -19,6 +19,7 @@ const createPropertyTxn = async (req, res) => {
       tokenPrice,
       Amount,
       Transaction_Number,
+      paymentMethod
     } = req.body;
 
     const session = await mongoose.startSession();
@@ -34,6 +35,7 @@ const createPropertyTxn = async (req, res) => {
       tokenPrice,
       Amount,
       Transaction_Number,
+      paymentMethod
     });
 
     var tokenIds = [];
@@ -51,6 +53,7 @@ const createPropertyTxn = async (req, res) => {
           tokenPrice,
           costPrice: Amount,
           Transaction_Number,
+          paymentMethod
         });
         user.tokens.push(newToken._id);
         newTransaction.tokens.push(newToken._id);
