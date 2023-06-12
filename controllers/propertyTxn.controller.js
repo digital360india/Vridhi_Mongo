@@ -22,10 +22,7 @@ const createPropertyTxn = async (req, res) => {
       paymentMethod
     } = req.body;
 
-    const session = await mongoose.startSession();
-    session.startTransaction();
-    const user = await UserModel.findOne({ _id: custId }).session(session);
-    if (!user) throw new Error("User not found");
+    
 
     const newTransaction = await PropertyTxn.create({
       Status,
@@ -37,94 +34,6 @@ const createPropertyTxn = async (req, res) => {
       Transaction_Number,
       paymentMethod
     });
-
-    var tokenIds = [];
-    var docs = [];
-    if (
-      newTransaction.Status === "Success" ||
-      newTransaction.Status === "Pending"
-    ) {
-      for (let i = 0; i < noOfTokens; i++) {
-        const newToken = await Token.create({
-          custId,
-          propertyId,
-          name: user.name,
-          contactNumber: user.contactNumber,
-          tokenPrice,
-          costPrice: Amount,
-          Transaction_Number,
-          paymentMethod
-        });
-        user.tokens.push(newToken._id);
-        newTransaction.tokens.push(newToken._id);
-        tokenIds.push(newToken._id);
-        docs.push(newToken);
-      }
-      Token.insertMany(docs)
-        .then(function () {
-          console.log("Data inserted"); // Success
-        })
-        .catch(function (error) {
-          console.log(error); // Failure
-        });
-    }
-
-    user.propertyTxn.push(newTransaction._id);
-    var br = true;
-    for (let i = 0; i < user.properties.length; i++) {
-      if (user.properties[i].propertyId == propertyId) {
-        user.properties[i].tokensBought += noOfTokens;
-        br = false;
-        break;
-      }
-    }
-    if (br == true) {
-      const prop = {
-        propertyId,
-        tokensBought: noOfTokens,
-      };
-      user.properties.push(prop);
-    }
-    user.noOfTokens = user.tokens.length;
-    if (
-      newTransaction.Status == "Success" ||
-      newTransaction.Status == "Pending"
-    ) {
-      await Property.findByIdAndUpdate(
-        { _id: propertyId },
-        {
-          $push: {
-            tokens: {
-              $each: docs,
-            },
-          },
-        }
-      );
-
-      await Property.findByIdAndUpdate({ _id: propertyId }, [
-        {
-          $set: {
-            soldTokens: { $add: ["$soldTokens", noOfTokens] },
-          },
-        },
-      ]);
-    }
-
-    await user.save({ session });
-    await session.commitTransaction();
-
-    const session1 = await mongoose.startSession();
-    session1.startTransaction();
-    const transaction = await PropertyTxn.findOne({
-      _id: newTransaction._id,
-    }).session(session1);
-    if (transaction.Status === "Success" || transaction.Status === "Pending")
-      await transaction.collection.updateOne(
-        { _id: newTransaction._id },
-        { $set: { tokens: tokenIds } }
-      );
-    await transaction.save({ session });
-    await session1.commitTransaction();
 
     return res.status(200).json(newTransaction);
   } catch (error) {
@@ -236,6 +145,103 @@ const updatePropTxnStatus = async (req, res) => {
     const { status } = req.body;
     const { id } = req.params;
 
+    const newTransaction = await PropertyTxn.findById(
+      { _id: id },
+    );
+
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    const user = await UserModel.findOne({ _id: newTransaction.custId }).session(session);
+    if (!user) throw new Error("User not found");
+
+    var tokenIds = [];
+    var docs = [];
+    if (
+      newTransaction.Status === "Success" ||
+      newTransaction.Status === "Pending"
+    ) {
+      for (let i = 0; i < newTransaction.noOfTokens; i++) {
+        const newToken = await Token.create({
+          custId,
+          propertyId: newTransaction.propertyId,
+          name: user.name,
+          contactNumber: user.contactNumber,
+          tokenPrice: newTransaction.tokenPrice,
+          costPrice: newTransaction.Amount,
+          Transaction_Number: newTransaction.Transaction_Number,
+          paymentMethod: newTransaction.paymentMethod
+        });
+        user.tokens.push(newToken._id);
+        newTransaction.tokens.push(newToken._id);
+        tokenIds.push(newToken._id);
+        docs.push(newToken);
+      }
+      Token.insertMany(docs)
+        .then(function () {
+          console.log("Data inserted"); // Success
+        })
+        .catch(function (error) {
+          console.log(error); // Failure
+        });
+    }
+
+    user.propertyTxn.push(newTransaction._id);
+    var br = true;
+    for (let i = 0; i < user.properties.length; i++) {
+      if (user.properties[i].propertyId == newTransaction.propertyId) {
+        user.properties[i].tokensBought += newTransaction.noOfTokens;
+        br = false;
+        break;
+      }
+    }
+    if (br == true) {
+      const prop = {
+        propertyId: newTransaction.propertyId,
+        tokensBought: newTransaction.noOfTokens,
+      };
+      user.properties.push(prop);
+    }
+    user.noOfTokens = user.tokens.length;
+    if (
+      newTransaction.Status == "Success" ||
+      newTransaction.Status == "Pending"
+    ) {
+      await Property.findByIdAndUpdate(
+        { _id: newTransaction.propertyId },
+        {
+          $push: {
+            tokens: {
+              $each: docs,
+            },
+          },
+        }
+      );
+
+      await Property.findByIdAndUpdate({ _id: newTransaction.propertyId }, [
+        {
+          $set: {
+            soldTokens: { $add: ["$soldTokens", newTransaction.noOfTokens] },
+          },
+        },
+      ]);
+    }
+
+    await user.save({ session });
+    await session.commitTransaction();
+
+    const session1 = await mongoose.startSession();
+    session1.startTransaction();
+    const transaction = await PropertyTxn.findOne({
+      _id: newTransaction._id,
+    }).session(session1);
+    if (transaction.Status === "Success" || transaction.Status === "Pending")
+      await transaction.collection.updateOne(
+        { _id: newTransaction._id },
+        { $set: { tokens: tokenIds } }
+      );
+    await transaction.save({ session });
+    await session1.commitTransaction();
+
     await PropertyTxn.findByIdAndUpdate(
       { _id: id },
       {
@@ -244,6 +250,7 @@ const updatePropTxnStatus = async (req, res) => {
         },
       }
     );
+
     const propTxn = await PropertyTxn.findById({ _id: id });
 
     return res.status(200).json(propTxn);
