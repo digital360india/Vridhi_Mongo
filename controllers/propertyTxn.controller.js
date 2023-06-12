@@ -19,10 +19,8 @@ const createPropertyTxn = async (req, res) => {
       tokenPrice,
       Amount,
       Transaction_Number,
-      paymentMethod
+      paymentMethod,
     } = req.body;
-
-    
 
     const newTransaction = await PropertyTxn.create({
       Status,
@@ -32,7 +30,7 @@ const createPropertyTxn = async (req, res) => {
       tokenPrice,
       Amount,
       Transaction_Number,
-      paymentMethod
+      paymentMethod,
     });
 
     return res.status(200).json(newTransaction);
@@ -145,13 +143,13 @@ const updatePropTxnStatus = async (req, res) => {
     const { status } = req.body;
     const { id } = req.params;
 
-    const newTransaction = await PropertyTxn.findById(
-      { _id: id },
-    );
+    const newTransaction = await PropertyTxn.findById({ _id: id });
 
     const session = await mongoose.startSession();
     session.startTransaction();
-    const user = await UserModel.findOne({ _id: newTransaction.custId }).session(session);
+    const user = await UserModel.findOne({
+      _id: newTransaction.custId,
+    }).session(session);
     if (!user) throw new Error("User not found");
 
     var tokenIds = [];
@@ -169,7 +167,7 @@ const updatePropTxnStatus = async (req, res) => {
           tokenPrice: newTransaction.tokenPrice,
           costPrice: newTransaction.Amount,
           Transaction_Number: newTransaction.Transaction_Number,
-          paymentMethod: newTransaction.paymentMethod
+          paymentMethod: newTransaction.paymentMethod,
         });
         user.tokens.push(newToken._id);
         newTransaction.tokens.push(newToken._id);
